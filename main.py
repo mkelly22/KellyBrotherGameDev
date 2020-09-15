@@ -53,6 +53,8 @@ def main():
                 y = y + MOVE_SPEED
                 moving = True
                 direction = SpriteCharacter.CHARACTER_DOWN
+                if y > (screen_height + sprite_character.sprite_sheet.handles[sprite_character.sprite_sheet.CENTER_HANDLE][1]):
+                    y = 0 - sprite_character.sprite_sheet.handles[sprite_character.sprite_sheet.CENTER_HANDLE][1]
             if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
                 x = x - MOVE_SPEED
                 moving = True
