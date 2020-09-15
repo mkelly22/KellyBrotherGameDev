@@ -20,7 +20,7 @@ def main():
         raise Exception("Failed to initialize a module")
 
     play_game = True
-    screen_width, screen_height = 1920, 1080
+    screen_width, screen_height = 1240, 720
     x, y = screen_width / 2, screen_height / 2
     clock = pygame.time.Clock()
     display = pygame.display.set_mode(size=[screen_width, screen_height])
@@ -47,6 +47,8 @@ def main():
                 y = y - MOVE_SPEED
                 moving = True
                 direction = SpriteCharacter.CHARACTER_UP
+                if y < (0 - sprite_character.sprite_sheet.handles[sprite_character.sprite_sheet.CENTER_HANDLE][1]):
+                    y = screen_height + sprite_character.sprite_sheet.handles[sprite_character.sprite_sheet.CENTER_HANDLE][1]
             if keys[pygame.K_DOWN] and not keys[pygame.K_UP]:
                 y = y + MOVE_SPEED
                 moving = True
