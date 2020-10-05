@@ -1,6 +1,6 @@
-import pygame
 from SpriteCharacter import *
-from GameMap import *
+from MapClasses.GameMap import *
+from MapClasses.GameMapFactory import *
 
 BLACK = (0, 0, 0, 255)
 WHITE = (255, 255, 255, 255)
@@ -15,15 +15,13 @@ SPRITE_UPDATE_RATE = 15  # 1 update / X FPS
 
 
 def main():
-
-
     ret = pygame.init()
     if ret[1] > 0:
         pygame.quit()
         raise Exception("Failed to initialize a module")
 
     play_game = True
-    screen_width, screen_height = 1240, 720
+    screen_width, screen_height = 1920, 1080
     x, y = screen_width / 2, screen_height / 2
     clock = pygame.time.Clock()
     display = pygame.display.set_mode(size=[screen_width, screen_height])
@@ -35,6 +33,7 @@ def main():
 
     # load first map
     game_map = GameMapFactory.create('./tiled_proj/maps/desert_map.tmx')
+    game_map.load_sprite_sheet()
 
     # play game
     while play_game:
@@ -77,9 +76,12 @@ def main():
                     count = 0
             # TODO - Display actual map
             display.fill(BLACK)
+            game_map.draw_background(display)
+
             sprite_character.set_direction(direction)
             sprite_character.draw_character(display, x, y)
             pygame.display.update()
+            print(clock.get_fps())
             clock.tick(fps)
             pygame.event.pump()
 

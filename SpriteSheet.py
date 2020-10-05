@@ -10,7 +10,7 @@ class SpriteSheet:
 
     CENTER_HANDLE = 4
 
-    def __init__(self, file_name, cols, rows):
+    def __init__(self, file_name, cols, rows, convert_alpha=True, pixel_boundary=False):
         """"
         Constructor. Pass in the file name of the spirit sheet, group orientation tuple, and character
         orientation tuple. Group orientation is (num groups in x, num groups in y) and character orientation
@@ -18,21 +18,42 @@ class SpriteSheet:
         """
 
         # Load the spirit sheet.
-        self.sheet = pygame.image.load(file_name).convert_alpha()
+        if convert_alpha:
+            self.sheet = pygame.image.load(file_name).convert_alpha()
+        else:
+            self.sheet = pygame.image.load(file_name)
 
         self.cols = cols
         self.rows = rows
         self.total_cell_count = cols * rows
         self.rect = self.sheet.get_rect()
 
-        w = self.cell_width = self.rect.width / cols
-        h = self.cell_height = self.rect.height / rows
+        w, h = 0, 0
+        if not pixel_boundary:
+            w = self.cell_width = self.rect.width / cols
+            h = self.cell_height = self.rect.height / rows
+        else:
+            w = self.cell_width = (self.rect.width - (cols + 1)) / cols
+            h = self.cell_height = (self.rect.height - (rows + 1)) / rows
 
         hw, hh = self.cell_center = (int(w / 2), int(h / 2))
 
         self.cells = list(
-            [(int(index % cols * w), int(int(index / cols) * h), int(w), int(h)) for index in
+            [[int(index % cols * w), int(int(index / cols) * h), int(w), int(h)] for index in
              range(self.total_cell_count)])
+
+        # adjust for pixel boundary
+        if pixel_boundary:
+            x_adjust = 1
+            y_adjust = 1
+            for cell in self.cells:
+                cell[0] = cell[0] + x_adjust
+                cell[1] = cell[1] + y_adjust
+                x_adjust = x_adjust + 1
+                if x_adjust == (self.cols + 1):
+                    x_adjust = 1
+                    y_adjust = y_adjust + 1
+
         self.handles = list([
             (0, 0), (-hw, 0), (-w, 0),
             (0, -hh), (-hw, -hh), (-w, -hh),
