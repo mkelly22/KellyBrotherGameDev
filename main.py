@@ -1,5 +1,6 @@
 import pygame
 from SpriteCharacter import *
+from GameMap import *
 
 BLACK = (0, 0, 0, 255)
 WHITE = (255, 255, 255, 255)
@@ -14,6 +15,8 @@ SPRITE_UPDATE_RATE = 15  # 1 update / X FPS
 
 
 def main():
+
+
     ret = pygame.init()
     if ret[1] > 0:
         pygame.quit()
@@ -30,6 +33,10 @@ def main():
     direction = SpriteCharacter.CHARACTER_DOWN
     count = 0
 
+    # load first map
+    game_map = GameMapFactory.create('./tiled_proj/maps/desert_map.tmx')
+
+    # play game
     while play_game:
         moving = False
 
@@ -68,6 +75,7 @@ def main():
                 if count >= SPRITE_UPDATE_RATE:
                     sprite_character.next_sprite()
                     count = 0
+            # TODO - Display actual map
             display.fill(BLACK)
             sprite_character.set_direction(direction)
             sprite_character.draw_character(display, x, y)

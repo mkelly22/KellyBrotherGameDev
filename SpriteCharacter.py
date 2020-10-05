@@ -1,4 +1,4 @@
-from SpiritSheet import *
+from SpriteSheet import *
 
 
 class SpriteCharacter:
@@ -8,7 +8,7 @@ class SpriteCharacter:
     CHARACTER_UP = 3
 
     def __init__(self, file_name, sprite_cols, rows, character_cols, character_rows):
-        self.sprite_sheet = SpiritSheet(file_name, sprite_cols * character_cols, rows * character_rows)
+        self.sprite_sheet = SpriteSheet(file_name, sprite_cols * character_cols, rows * character_rows)
 
         self.sprite_cols = sprite_cols
         self.sprite_rows = rows
@@ -33,7 +33,7 @@ class SpriteCharacter:
         else:
             self.character = self.character - 1
 
-    def draw_character(self, surface, x, y, handle=SpiritSheet.CENTER_HANDLE):
+    def draw_character(self, surface, x, y, handle=SpriteSheet.CENTER_HANDLE):
         sprite_index = (self.direction * self.sprite_cols * self.character_cols) + self.cur_sprite + (
                                (self.character % self.character_cols) * self.sprite_cols)
         if int(self.character / self.character_cols) == 1:

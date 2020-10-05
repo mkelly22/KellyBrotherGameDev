@@ -5,7 +5,7 @@ Class to pull individual sprites from sprite sheets.
 import pygame
 
 
-class SpiritSheet:
+class SpriteSheet:
     """" Class used to grab images out of a spirit sheet. """
 
     CENTER_HANDLE = 4
