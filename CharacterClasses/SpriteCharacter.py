@@ -1,21 +1,24 @@
-from SpriteSheet import *
+from CharacterClasses.SpriteSheet import *
+
+SPRITE_CHARACTER_DOWN = 0
+SPRITE_CHARACTER_LEFT = 1
+SPRITE_CHARACTER_RIGHT = 2
+SPRITE_CHARACTER_UP = 3
 
 
-class SpriteCharacter:
-    CHARACTER_DOWN = 0
-    CHARACTER_LEFT = 1
-    CHARACTER_RIGHT = 2
-    CHARACTER_UP = 3
+class SpriteCharacter(object):
 
-    def __init__(self, file_name, sprite_cols, rows, character_cols, character_rows):
-        self.sprite_sheet = SpriteSheet(file_name, sprite_cols * character_cols, rows * character_rows)
+    def __init__(self, sprite_sheet_dict):
+        self.sprite_cols = sprite_sheet_dict['sprite_cols']
+        self.sprite_rows = sprite_sheet_dict['sprite_rows']
+        self.character_cols = sprite_sheet_dict['character_cols']
+        self.character_rows = sprite_sheet_dict['character_rows']
 
-        self.sprite_cols = sprite_cols
-        self.sprite_rows = rows
-        self.character_cols = character_cols
-        self.character_rows = character_rows
+        self.sprite_sheet = SpriteSheet(sprite_sheet_dict['file_name'],
+                                        self.sprite_cols * self.character_cols,
+                                        self.sprite_rows * self.character_rows)
 
-        self.direction = self.CHARACTER_DOWN
+        self.direction = SPRITE_CHARACTER_DOWN
         self.character = 0
         self.cur_sprite = 0
 
@@ -33,7 +36,9 @@ class SpriteCharacter:
         else:
             self.character = self.character - 1
 
-    def draw_character(self, surface, x, y, handle=SpriteSheet.CENTER_HANDLE):
+    def draw_character(self, surface, pos, handle=CENTER_CENTER_HANDLE):
+        x = pos[0]
+        y = pos[1]
         sprite_index = (self.direction * self.sprite_cols * self.character_cols) + self.cur_sprite + (
                                (self.character % self.character_cols) * self.sprite_cols)
         if int(self.character / self.character_cols) == 1:
@@ -42,3 +47,6 @@ class SpriteCharacter:
 
     def next_sprite(self):
         self.cur_sprite = (self.cur_sprite + 1) % self.sprite_cols
+
+    def get_sprite_size_rect(self):
+        return self.sprite_sheet.get_sprite_size_rec()

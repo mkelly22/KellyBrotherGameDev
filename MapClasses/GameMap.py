@@ -1,6 +1,6 @@
 from os import path
 
-from SpriteSheet import *
+from CharacterClasses.SpriteSheet import *
 
 FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -62,6 +62,41 @@ class GameMap:
             if x == 0:
                 y = y + 32
 
+    def draw_area(self, surface, rect):
+        if self.sprite_sheet is None:
+            raise Exception('Sprite sheet not yet loaded')
+
+        x = 0
+        y = 0
+
+        for tile in self.map_data.split(','):
+            if in_rect((x + (self.sprite_sheet.cell_width / 2), y + (self.sprite_sheet.cell_height / 2)), rect):
+                tile_val = int(tile)
+                flipped_horizontally = False
+                flipped_vertically = False
+                flipped_diagonally = False
+                if tile_val > (self.sprite_map_cols * self.sprite_map_rows):
+                    if (FLIPPED_HORIZONTALLY_FLAG & tile_val) != 0:
+                        flipped_horizontally = True
+                        tile_val = (~FLIPPED_HORIZONTALLY_FLAG) & tile_val
+                    if (FLIPPED_VERTICALLY_FLAG & tile_val) != 0:
+                        flipped_vertically = True
+                        tile_val = (~FLIPPED_VERTICALLY_FLAG) & tile_val
+                    if (FLIPPED_DIAGONALLY_FLAG & tile_val) != 0:
+                        flipped_diagonally = True
+                        tile_val = (~FLIPPED_DIAGONALLY_FLAG) & tile_val
+
+                # subtract 1 to make the value 0 indexed
+                tile_val = tile_val - 1
+
+                self.sprite_sheet.draw(surface, tile_val, x, y)
+            x = (x + 32) % (32 * self.width)
+            if x == 0:
+                y = y + 32
+
+    def get_tile_size(self):
+        return self.sprite_sheet.cell_width, self.sprite_sheet.cell_height
+
     def print(self):
         print('------------------------------------------------------')
         print('Map variables')
@@ -105,4 +140,12 @@ class GameMap:
         for map_object in self.game_objs_hazard:
             print(map_object.to_string())
             print('')
+
+
+def in_rect(cord, rect):
+    if cord[0] < rect[0] or cord[0] > (rect[0] + rect[2]):
+        return False
+    elif  cord[1] < rect[1] or cord[1] > (rect[1] + rect[3]):
+        return False
+    return True
 

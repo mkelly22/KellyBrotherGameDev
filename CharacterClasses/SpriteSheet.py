@@ -4,11 +4,19 @@ Class to pull individual sprites from sprite sheets.
 
 import pygame
 
+TOP_LEFT_HANDLE = 0
+TOP_CENTER_HANDLE = 1
+TOP_RIGHT_HANDLE = 2
+CENTER_LEFT_HANDLE = 3
+CENTER_CENTER_HANDLE = 4
+CENTER_RIGHT_HANDLE = 5
+BOTTOM_LEFT_HANDLE = 6
+BOTTOM_CENTER_HANDLE = 7
+BOTTOM_RIGHT_HANDLE = 8
+
 
 class SpriteSheet:
     """" Class used to grab images out of a spirit sheet. """
-
-    CENTER_HANDLE = 4
 
     def __init__(self, file_name, cols, rows, convert_alpha=True, pixel_boundary=False):
         """"
@@ -28,7 +36,6 @@ class SpriteSheet:
         self.total_cell_count = cols * rows
         self.rect = self.sheet.get_rect()
 
-        w, h = 0, 0
         if not pixel_boundary:
             w = self.cell_width = self.rect.width / cols
             h = self.cell_height = self.rect.height / rows
@@ -64,3 +71,6 @@ class SpriteSheet:
         surface.blit(self.sheet, (int(x + self.handles[handle][0]),
                                   int(y + self.handles[handle][1])),
                      self.cells[cell_index])
+
+    def get_sprite_size_rec(self):
+        return self.cell_width, self.cell_height
