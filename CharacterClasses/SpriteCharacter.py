@@ -1,4 +1,4 @@
-from CharacterClasses.SpriteSheet import *
+from CharacterClasses import SpriteSheet
 
 SPRITE_CHARACTER_DOWN = 0
 SPRITE_CHARACTER_LEFT = 1
@@ -14,9 +14,9 @@ class SpriteCharacter(object):
         self.character_cols = sprite_sheet_dict['character_cols']
         self.character_rows = sprite_sheet_dict['character_rows']
 
-        self.sprite_sheet = SpriteSheet(sprite_sheet_dict['file_name'],
-                                        self.sprite_cols * self.character_cols,
-                                        self.sprite_rows * self.character_rows)
+        self.sprite_sheet = SpriteSheet.SpriteSheet(sprite_sheet_dict['file_name'],
+                                                    self.sprite_cols * self.character_cols,
+                                                    self.sprite_rows * self.character_rows)
 
         self.direction = SPRITE_CHARACTER_DOWN
         self.character = 0
@@ -36,11 +36,12 @@ class SpriteCharacter(object):
         else:
             self.character = self.character - 1
 
-    def draw_character(self, surface, pos, handle=CENTER_CENTER_HANDLE):
+    def draw_character(self, surface, pos,
+                       handle=SpriteSheet.CENTER_CENTER_HANDLE):
         x = pos[0]
         y = pos[1]
-        sprite_index = (self.direction * self.sprite_cols * self.character_cols) + self.cur_sprite + (
-                               (self.character % self.character_cols) * self.sprite_cols)
+        sprite_index = (self.direction * self.sprite_cols * self.character_cols) + self.cur_sprite \
+            + ((self.character % self.character_cols) * self.sprite_cols)
         if int(self.character / self.character_cols) == 1:
             sprite_index = sprite_index + (self.character_cols * self.sprite_cols * self.sprite_rows)
         self.sprite_sheet.draw(surface, sprite_index, x, y, handle)

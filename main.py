@@ -1,31 +1,31 @@
-from CharacterClasses.PlayerCharacter import *
-from MapClasses.GameMapFactory import *
+"""
+Runs 2D RPG sprite game developed by Matt and Marcus Kelly.
+"""
+import pygame
 
-BLACK = (0, 0, 0, 255)
-WHITE = (255, 255, 255, 255)
-
-CHARACTER_SPRITE_DICT = {
-    'file_name': './images/sprite_sheet1.png',
-    'sprite_cols': 3,
-    'sprite_rows': 4,
-    'character_cols': 4,
-    'character_rows': 2,
-}
+from CharacterClasses.PlayerCharacter import PlayerCharacter
+from MapClasses.GameMapFactory import GameMapFactory
+import SpriteDicts
+import Utils
 
 
 def main():
-    ret = pygame.init()
-    if ret[1] > 0:
+    """
+    Main game loop.
+    """
+
+    if pygame.init()[1] > 0:
         pygame.quit()
         raise Exception("Failed to initialize a module")
 
     play_game = True
-    screen_width, screen_height = 1920, 1080
-    x, y = screen_width / 2, screen_height / 2
+    screen_dim = [1920, 1080]
     clock = pygame.time.Clock()
-    display = pygame.display.set_mode(size=[screen_width, screen_height])
+    display = pygame.display.set_mode(size=screen_dim)
     pygame.display.set_caption("Sprite Tests")
-    player_character = PlayerCharacter([x, y], (screen_width, screen_height), CHARACTER_SPRITE_DICT)
+    player_character = PlayerCharacter([screen_dim[0] / 2, screen_dim[1] / 2],
+                                       (screen_dim[0], screen_dim[1]),
+                                       SpriteDicts.CHARACTER_SPRITE_DICT)
     fps = 60
 
     # load first map
@@ -36,7 +36,6 @@ def main():
 
     # play game
     while play_game:
-        moving = False
 
         events = pygame.event.get()
         for event in events:
@@ -64,12 +63,13 @@ def main():
             player_character.move(move_left, move_right, move_up, move_down)
 
             if new_map:
-                display.fill(BLACK)
+                display.fill(Utils.BLACK)
                 game_map.draw_background(display)
                 new_map = False
 
             if player_character.is_moving():
-                game_map.draw_area(display, player_character.get_movement_area(game_map.get_tile_size()))
+                game_map.draw_area(display,
+                                   player_character.get_movement_area(game_map.get_tile_size()))
             player_character.draw_character(display)
             pygame.display.update()
             print(clock.get_fps())
@@ -81,5 +81,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

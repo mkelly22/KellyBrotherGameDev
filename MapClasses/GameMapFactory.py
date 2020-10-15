@@ -1,17 +1,27 @@
+"""
+Creates a GameMap from a given Tiled map tmx file.
+"""
+
 from os import path
 import xml.etree.ElementTree as ET
 
-from MapClasses.GameMap import *
-from MapClasses.MapObject import *
+from MapClasses import GameMap
+from MapClasses import MapObject
 
 VERSION = '1.4'
 TILED_VERSION = '1.4.2'
 
 
 class GameMapFactory:
+    """
+    Creates a GameMap from a given Tiled map tmx file.
+    """
 
     @staticmethod
     def create(map_tmx_file):
+        """
+        Creates a GameMap from a given Tiled map tmx file.
+        """
         # check if map tmx file exits
         if not path.exists(map_tmx_file):
             raise Exception('map tmx file does not exist')
@@ -25,8 +35,8 @@ class GameMapFactory:
 
             # check versions
             if root.attrib['version'] != VERSION or root.attrib['tiledversion'] != TILED_VERSION:
-                raise Exception('Version of map is not compatible, current supported version is: ' + VERSION +
-                                ', current supported tile version is: ' + TILED_VERSION)
+                raise Exception('Version of map is not compatible, current supported version is: '
+                                + VERSION + ', current supported tile version is: ' + TILED_VERSION)
 
             width = int(root.attrib['width'])
             height = int(root.attrib['height'])
@@ -44,7 +54,7 @@ class GameMapFactory:
             for map_object in objectgroup:
                 object_properties = map_object.find('properties')
                 blocked = None
-                movement = EnMovementProperty.NONE
+                movement = MapObject.EnMovementProperty.NONE
                 start_zone = None
                 map_exit = None
                 for object_property in object_properties:
@@ -57,16 +67,20 @@ class GameMapFactory:
                         start_zone = True
                     if property_name == 'movement':
                         if object_property.attrib['value'] == 'slowed':
-                            movement = EnMovementProperty.SLOWED
+                            movement = MapObject.EnMovementProperty.SLOWED
                         else:
-                            raise Exception('object property is not compatible: ' + object_property.attrib['value'])
+                            raise Exception('object property is not compatible: ' +
+                                            object_property.attrib['value'])
 
                 if blocked is not None:
-                    game_objs_env.append(MapObject(blocked, movement, start_zone, map_exit))
-                elif movement is not EnMovementProperty.NONE:
-                    game_objs_hazard.append(MapObject(blocked, movement, start_zone, map_exit))
+                    game_objs_env.append(MapObject.MapObject(blocked, movement, start_zone,
+                                                             map_exit))
+                elif movement is not MapObject.EnMovementProperty.NONE:
+                    game_objs_hazard.append(MapObject.MapObject(blocked, movement, start_zone,
+                                                                map_exit))
                 else:
-                    game_objs_entry_exit.append(MapObject(blocked, movement, start_zone, map_exit))
+                    game_objs_entry_exit.append(MapObject.MapObject(blocked, movement, start_zone,
+                                                                    map_exit))
 
             # find tileset to get source tsx file
             tileset = root.find('tileset')
@@ -90,5 +104,6 @@ class GameMapFactory:
         except TypeError:
             raise Exception('Referenced tsx file is not valid')
 
-        return GameMap(map_data, width, height, sprite_map_file_path, sprite_map_cols, sprite_map_rows, game_objs_env,
-                       game_objs_entry_exit, game_objs_hazard)
+        return GameMap.GameMap(map_data, width, height, sprite_map_file_path, sprite_map_cols,
+                               sprite_map_rows, game_objs_env, game_objs_entry_exit,
+                               game_objs_hazard)
